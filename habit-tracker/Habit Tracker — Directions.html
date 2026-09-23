@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Habit Tracker — Main Screen Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Audiowide&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, "Helvetica Neue", sans-serif; background: #efece6; color: #1c1c1c; }
+  .page { max-width: 1280px; margin: 0 auto; padding: 48px 32px 64px; }
+  .page-head { margin-bottom: 40px; }
+  .page-head h1 { margin: 0 0 8px; font-size: 28px; letter-spacing: -0.01em; }
+  .page-head p { margin: 0; color: #666; font-size: 14px; line-height: 1.6; max-width: 72ch; }
+  .page-head code { background: #ddd8cf; border-radius: 4px; padding: 1px 6px; font-size: 12px; }
+
+  .canvas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; align-items: start; }
+  .cell { background: #fbfaf7; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.08); }
+  .cell-label { padding: 20px 22px 16px; border-bottom: 1px solid #e7e3da; }
+  .cell-label h3 { margin: 0; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .cell-label p { margin: 8px 0 0; font-size: 14px; line-height: 1.5; color: #555; }
+  .cell-label .kw { margin-top: 8px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #999; }
+  .cell-body { padding: 26px 18px 34px; display: flex; justify-content: center; }
+
+  /* device frame wrapper (real 393x852 scaled to 0.55) */
+  .frame-wrap { width: 216px; height: 469px; }
+  .frame-scaled { transform: scale(0.55); transform-origin: top left; }
+  .ios-frame { width: 393px; height: 852px; background: #000; border-radius: 56px; padding: 14px; box-shadow: 0 1px 0 rgba(255,255,255,0.1) inset, 0 30px 60px rgba(0,0,0,0.25); }
+  .ios-screen { width: 100%; height: 100%; background: #fff; border-radius: 44px; overflow: hidden; position: relative; }
+  .ios-island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 126px; height: 37px; background: #000; border-radius: 20px; z-index: 10; }
+  .ios-status { position: absolute; top: 0; left: 0; right: 0; height: 54px; padding: 0 30px; display: flex; align-items: center; justify-content: space-between; font: 600 17px/1 -apple-system, sans-serif; z-index: 5; }
+  .ios-status .icons { font-size: 13px; letter-spacing: 1px; }
+  .ios-home { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 140px; height: 5px; background: #000; border-radius: 3px; z-index: 10; }
+  .app { padding: 60px 22px 44px; height: 100%; }
+
+  /* ---------- A · Swiss Editorial ---------- */
+  .swiss { background: #f6f5f0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  .swiss .greet { font-size: 15px; font-weight: 500; letter-spacing: 0.02em; color: #1a1a1a; }
+  .swiss .date { font-size: 12px; color: #6b6b6b; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4px; }
+  .swiss .streak { border-top: 2px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; padding: 14px 0; margin: 18px 0; }
+  .swiss .streak .num { font-size: 52px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+  .swiss .streak .lab { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #6b6b6b; margin-top: 4px; }
+  .swiss .ring-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #d9d7cf; }
+  .swiss .ring-row .t { flex: 1; }
+  .swiss .ring-row .t b { display: block; font-size: 14px; font-weight: 600; }
+  .swiss .ring-row .t span { font-size: 11px; color: #6b6b6b; }
+  .swiss .ring-row .mark { width: 16px; height: 16px; border: 1.5px solid #c8c5bc; border-radius: 50%; }
+  .swiss .ring-row.done .mark { background: #e63329; border-color: #e63329; }
+  .swiss .streak-num { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .swiss .cta { margin-top: 18px; height: 52px; border: 1.5px solid #1a1a1a; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+  .swiss nav { position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-around; border-top: 1px solid #d9d7cf; background: #f6f5f0; padding: 14px 0 26px; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: #8a8880; }
+
+  /* ---------- B · Kenya Hara ---------- */
+  .hara { background: #f5f1ea; font-family: "Cormorant Garamond", serif; }
+  .hara .word { padding-top: 26px; }
+  .hara .word .day { font-size: 30px; font-weight: 300; color: #3d3a34; line-height: 1.05; }
+  .hara .word .sub { font-size: 12px; color: #a59c8e; margin-top: 8px; font-style: italic; }
+  .hara .arc { text-align: center; padding: 22px 0 10px; }
+  .hara .arc svg { display: inline-block; }
+  .hara .arc .cap { font-size: 11px; color: #b0a795; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 8px; }
+  .hara .list { margin-top: 14px; }
+  .hara .item { display: flex; align-items: baseline; justify-content: space-between; padding: 13px 2px; border-bottom: 1px solid #e4ddd0; }
+  .hara .item .n { font-size: 16px; font-weight: 400; color: #4a463f; }
+  .hara .item .s { font-size: 11px; color: #b0a795; font-style: italic; }
+  .hara .item .dot { width: 8px; height: 8px; border-radius: 50%; background: #d9d2c3; flex: none; }
+  .hara .item.done .dot { background: #8fa08a; }
+  .hara .quiet { text-align: center; font-size: 10px; color: #c0b8a8; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 22px; }
+
+  /* ---------- C · Y2K ---------- */
+  .y2k { background: #0b0e1a; font-family: "Audiowide", system-ui, sans-serif; color: #d7f7e3; }
+  .y2k .hud-top { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4ffc8; letter-spacing: 0.1em; }
+  .y2k .hud-top .lvl { border: 1px solid #2dff9d; border-radius: 20px; padding: 5px 12px; font-size: 10px; color: #2dff9d; background: rgba(45,255,157,0.06); }
+  .y2k .chrome-box { position: relative; margin-top: 18px; border-radius: 18px; padding: 18px 16px; overflow: hidden;
+    background: linear-gradient(135deg, #1b2440 0%, #0e1428 55%, #191f3d 100%); border: 1px solid rgba(120,200,255,0.35); }
+  .y2k .chrome-box::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 4px); }
+  .y2k .chrome-box .big { font-size: 40px; color: #9fe8ff; text-shadow: 0 0 18px rgba(120,200,255,0.55); }
+  .y2k .chrome-box .big span { font-size: 16px; color: #6fd9a0; }
+  .y2k .chrome-box .lab { margin-top: 6px; font-size: 9px; letter-spacing: 0.22em; color: #7fd7ff; text-transform: uppercase; }
+  .y2k .gauge-row { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 12px 14px; border-radius: 14px;
+    background: rgba(45,255,157,0.05); border: 1px solid rgba(45,255,157,0.28); }
+  .y2k .gauge-row .name { flex: 1; font-size: 11px; color: #d7f7e3; }
+  .y2k .gauge-row .bar { width: 60px; height: 8px; border-radius: 4px; background: #16223c; overflow: hidden; }
+  .y2k .gauge-row .bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, #2dff9d, #7fe3ff); }
+  .y2k .gauge-row .pts { font-size: 10px; color: #7fe3ff; }
+  .y2k .xp { margin-top: 14px; height: 7px; border-radius: 4px; background: #141d33; overflow: hidden; }
+  .y2k .xp i { display: block; height: 100%; width: 64%; background: linear-gradient(90deg, #ffd873, #ff9d2d); border-radius: 4px; }
+  .y2k .xp-cap { display: flex; justify-content: space-between; margin-top: 6px; font-size: 9px; color: #8fa8c8; letter-spacing: 0.14em; text-transform: uppercase; }
+  .y2k nav { position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-around; padding: 12px 0 26px; background: rgba(11,14,26,0.92); border-top: 1px solid rgba(120,200,255,0.25); font-size: 9px; color: #5f7aa8; }
+  .y2k nav .on { color: #2dff9d; }
+
+  footer { margin-top: 36px; font-size: 12px; color: #8a857a; }
+  @media (max-width: 980px) { .canvas { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="page-head">
+    <h1>Habit Tracker — Main Screen · Direction preview</h1>
+    <p>
+      Draft v1 — design advisor mode. Three directions from three different schools, sketched on the
+      <b>main screen</b> (Today view: greeting, streak/progress, habit list, add-CTA, bottom nav).
+      Nothing here is finished — it exists so you can pick a vector before I build the real thing.
+    </p>
+  </header>
+
+  <section class="canvas">
+
+    <!-- ============ A · Swiss Editorial ============ -->
+    <section class="cell">
+      <header class="cell-label">
+        <h3>A · Swiss Editorial</h3>
+        <p>Serious strength-journal energy: giant streak numerals, hairline rules, monochrome with one signal accent. For a tracker that feels like a precision instrument.</p>
+        <p class="kw">structural · monochrome · grid-disciplined · flagship: Pentagram / Vignelli</p>
+      </header>
+      <div class="cell-body">
+        <div class="frame-wrap"><div class="frame-scaled">
+          <div class="ios-frame"><div class="ios-screen swiss">
+            <div class="ios-island"></div>
+            <div class="ios-status"><span>9:41</span><span class="icons">●●●</span></div>
+            <div class="app">
+              <div class="greet">Good morning, Alex</div>
+              <div class="date">Tue · 22 Sep · Day 12</div>
+
+              <div class="streak">
+                <div class="num" style="font-variant-numeric: tabular-nums;">12</div>
+                <div class="lab">Day streak — running</div>
+              </div>
+
+              <div class="ring-row done">
+                <div class="t"><b>Drink water</b><span>06:30 · repeatedly</span></div>
+                <div class="mark"></div>
+              </div>
+              <div class="ring-row done">
+                <div class="t"><b>Read 20 min</b><span>07:00 · daily</span></div>
+                <div class="mark"></div>
+              </div>
+              <div class="ring-row liked">
+                <div class="t"><b>Run 5 km</b><span>18:00 · 3× week</span></div>
+                <div class="streak-num" style="color:#e63329;">8</div>
+                <div class="mark"></div>
+              </div>
+              <div class="ring-row">
+                <div class="t"><b>Meditate</b><span>21:00 · daily</span></div>
+                <div class="mark"></div>
+              </div>
+
+              <div class="cta">Add habit</div>
+            </div>
+            <div class="ios-home" style="background:#6b6b6b;"></div>
+            <nav style="position:absolute;bottom:0;left:0;right:0;border-top:1px solid #d9d7cf;background:#f6f5f0;display:flex;justify-content:space-around;padding:14px 0 26px;font-size:9px;letter-spacing:0.06em;text-transform:uppercase;color:#8a8880;">
+              <span style="color:#1a1a1a;">Today</span><span>Habits</span><span>Insights</span><span>Profile</span>
+            </nav>
+          </div></div>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ============ B · Kenya Hara ============ -->
+    <section class="cell">
+      <header class="cell-label">
+        <h3>B · Kenya Hara “emptiness”</h3>
+        <p>Quiet wellness at 30% fill: warm off-white, tiny content islands, one soft sage hue, a gentle serif. For a tracker you open like a morning ritual.</p>
+        <p class="kw">generous-whitespace · monochrome · patient · flagship: MUJI / Hara</p>
+      </header>
+      <div class="cell-body">
+        <div class="frame-wrap"><div class="frame-scaled">
+          <div class="ios-frame"><div class="ios-screen hara">
+            <div class="ios-island"></div>
+            <div class="ios-status" style="color:#3d3a34;"><span>9:41</span><span class="icons">●●●</span></div>
+            <div class="app">
+              <div class="word">
+                <div class="day">Tuesday.<br />Continue.</div>
+                <div class="sub">three small things today</div>
+              </div>
+
+              <div class="arc">
+                <svg width="150" height="90" viewBox="0 0 150 90" fill="none" aria-hidden="true">
+                  <path d="M 15 75 A 60 60 0 0 1 135 75" stroke="#d9d2c3" stroke-width="5" stroke-linecap="round"/>
+                  <path d="M 15 75 A 60 60 0 0 1 106 35" stroke="#8fa08a" stroke-width="5" stroke-linecap="round"/>
+                </svg>
+                <div class="cap">two of three done</div>
+              </div>
+
+              <div class="list">
+                <div class="item done"><span class="n">an hour of reading</span><span class="s">early</span><span class="dot"></span></div>
+                <div class="item done"><span class="n">a walk outside</span><span class="s">noon</span><span class="dot"></span></div>
+                <div class="item"><span class="n">ten minutes quiet</span><span class="s">before sleep</span><span class="dot"></span></div>
+              </div>
+
+              <div class="quiet">add a habit</div>
+            </div>
+            <div class="ios-home" style="background:#a59c8e;"></div>
+            <nav style="position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-around;padding:16px 0 28px;font-family:'Cormorant Garamond',serif;font-size:12px;color:#b0a795;background:rgba(245,241,234,0.92);">
+              <span style="color:#4a463f;">Today</span><span>Habits</span><span>Insights</span><span>You</span>
+            </nav>
+          </div></div>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ============ C · Y2K ============ -->
+    <section class="cell">
+      <header class="cell-label">
+        <h3>C · Y2K futurist-retro</h3>
+        <p>Gamified chrome and acid green: HUD stat boxes, chrome streaks, XP bars, scanlines. For a tracker that rewards like a game.</p>
+        <p class="kw">chrome · bubble · iridescent · flagship: early-00s tech branding</p>
+      </header>
+      <div class="cell-body">
+        <div class="frame-wrap"><div class="frame-scaled">
+          <div class="ios-frame"><div class="ios-screen y2k">
+            <div class="ios-island"></div>
+            <div class="ios-status" style="color:#d7f7e3;"><span>9:41</span><span class="icons">●●●</span></div>
+            <div class="app">
+              <div class="hud-top"><span>ALEX // PILOT</span><span class="lvl">LVL 7</span></div>
+
+              <div class="chrome-box">
+                <div class="big">12<span> DAYS</span></div>
+                <div class="lab">Streak · status: online</div>
+              </div>
+
+              <div class="gauge-row">
+                <span class="name">Water</span>
+                <span class="bar"><i style="width:100%;"></i></span>
+                <span class="pts">+10</span>
+              </div>
+              <div class="gauge-row">
+                <span class="name">Reading</span>
+                <span class="bar"><i style="width:100%;"></i></span>
+                <span class="pts">+15</span>
+              </div>
+              <div class="gauge-row">
+                <span class="name">Run 5k</span>
+                <span class="bar"><i style="width:62%;"></i></span>
+                <span class="pts">+20 →</span>
+              </div>
+
+              <div class="xp"><i></i></div>
+              <div class="xp-cap"><span>Today XP</span><span>64 / 100</span></div>
+            </div>
+            <div class="ios-home" style="background:#a4ffc8;"></div>
+            <nav style="position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-around;padding:12px 0 26px;background:rgba(11,14,26,0.92);border-top:1px solid rgba(120,200,255,0.25);font-size:9px;color:#5f7aa8;font-family:Audiowide,monospace;">
+              <span class="on">TODAY</span><span>HABITS</span><span>XP</span><span>SHOP</span>
+            </nav>
+          </div></div>
+        </div></div>
+      </div>
+    </section>
+
+  </section>
+
+  <footer>
+    Advisory preview — pick a direction (or a blend), then I commit to a visual system and build the full hi-fi main screen with variations.
+  </footer>
+</main>
+</body>
+</html>

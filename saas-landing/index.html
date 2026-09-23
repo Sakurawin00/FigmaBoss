@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Metrico — Product analytics for modern teams</title>
+  <meta name="description" content="Metrico turns raw product events into clear, actionable insight — no SQL required. Set up in minutes." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-primary: #2563EB;
+      --color-primary-dark: #1D4ED8;
+      --color-primary-light: #DBEAFE;
+      --color-brand-500: #3B82F6;
+      --color-accent: #EA580C;
+      --color-accent-dark: #C2410C;
+      --color-ink: #1E293B;
+      --color-muted: #475569;
+      --color-surface: #F8FAFC;
+      --color-card: #FFFFFF;
+      --color-line: #E2E8F0;
+      --color-destructive: #DC2626;
+      --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+  </style>
+
+  <style>
+    :focus-visible {
+      outline: 3px solid #2563EB;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+
+<body class="bg-surface font-sans text-ink antialiased">
+
+  <!-- ============ NAV ============ -->
+  <header id="nav" class="sticky top-0 z-50 border-b border-line/70 bg-white/70 backdrop-blur-xl transition-shadow">
+    <nav class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8" aria-label="Main">
+      <a href="#" class="flex items-center gap-2 text-lg font-bold text-ink">
+        <!-- logo mark -->
+        <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="5" fill="#2563EB" />
+          <path d="M7.5 16v-2m3 2v-4m3 4V9m3 7V6" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Metrico
+      </a>
+
+      <!-- desktop links -->
+      <div class="hidden items-center gap-8 text-sm font-medium text-muted md:flex">
+        <a href="#features" class="rounded transition-colors hover:text-ink">Features</a>
+        <a href="#product" class="rounded transition-colors hover:text-ink">Product</a>
+        <a href="#pricing" class="rounded transition-colors hover:text-ink">Pricing</a>
+        <a href="#faq" class="rounded transition-colors hover:text-ink">FAQ</a>
+      </div>
+
+      <div class="hidden items-center gap-3 md:flex">
+        <a href="#" class="flex min-h-11 items-center rounded-lg px-4 text-sm font-semibold text-ink transition-colors hover:bg-surface">Log in</a>
+        <a href="#cta" class="flex min-h-11 cursor-pointer items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-primary-dark hover:shadow-md active:scale-[0.98]">Start free</a>
+      </div>
+
+      <!-- mobile burger -->
+      <button id="menuBtn" type="button" aria-expanded="false" aria-controls="mobileMenu"
+        class="flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-lg text-ink transition-colors hover:bg-surface md:hidden">
+        <svg id="iconOpen" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+        <svg id="iconClose" class="hidden h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
+        <span class="sr-only">Open menu</span>
+      </button>
+    </nav>
+
+    <!-- mobile menu -->
+    <div id="mobileMenu" class="hidden border-t border-line bg-white/95 px-4 pb-4 pt-2 backdrop-blur-xl md:hidden">
+      <div class="flex flex-col gap-1">
+        <a href="#features" class="flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-ink transition-colors hover:bg-surface">Features</a>
+        <a href="#product" class="flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-ink transition-colors hover:bg-surface">Product</a>
+        <a href="#pricing" class="flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-ink transition-colors hover:bg-surface">Pricing</a>
+        <a href="#faq" class="flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-ink transition-colors hover:bg-surface">FAQ</a>
+        <div class="mt-3 flex flex-col gap-2 border-t border-line pt-3">
+          <a href="#" class="flex min-h-11 items-center justify-center rounded-lg border border-line text-sm font-semibold text-ink transition-colors hover:bg-surface">Log in</a>
+          <a href="#cta" class="flex min-h-11 cursor-pointer items-center justify-center rounded-lg bg-primary text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-dark">Start free</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="relative overflow-hidden">
+      <!-- decorative glass blobs -->
+      <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+        <div class="absolute -top-24 left-1/2 h-[480px] w-[720px] -translate-x-1/2 rounded-full bg-primary/15 blur-3xl"></div>
+        <div class="absolute right-[8%] top-32 h-64 w-64 rounded-full bg-accent/15 blur-3xl"></div>
+        <div class="absolute bottom-0 left-[5%] h-72 w-72 rounded-full bg-brand-500/10 blur-3xl"></div>
+      </div>
+
+      <div class="mx-auto max-w-7xl px-4 pb-16 pt-20 sm:px-6 sm:pt-28 lg:px-8">
+        <!-- badge -->
+        <div class="reveal mx-auto flex justify-center">
+          <span class="inline-flex items-center gap-2 rounded-full border border-line bg-white/80 px-4 py-1.5 text-sm font-medium text-muted shadow-sm backdrop-blur">
+            <svg class="h-4 w-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2l2.4 6.9L21 12l-6.6 3.1L12 22l-2.4-6.9L3 12l6.6-3.1z" />
+            </svg>
+            New: Funnels 2.0 with AI-powered insights
+          </span>
+        </div>
+
+        <!-- headline -->
+        <div class="reveal mx-auto mt-8 max-w-3xl text-center">
+          <h1 class="text-4xl font-bold leading-tight tracking-tight text-ink sm:text-5xl lg:text-6xl">
+            Understand every user,<br class="hidden sm:block" />
+            <span class="text-primary">one dashboard</span> at a time
+          </h1>
+          <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">
+            Metrico turns raw product events into clear, actionable insight — no SQL required.
+            Set up in minutes. Trusted by 4,000+ product teams.
+          </p>
+        </div>
+
+        <!-- CTA -->
+        <div class="reveal mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a href="#cta" class="flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-7 text-base font-semibold text-white shadow-md transition-all duration-200 hover:bg-primary-dark hover:shadow-lg active:scale-[0.98] sm:w-auto">
+            Start free trial
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14m-6-6l6 6-6 6" />
+            </svg>
+          </a>
+          <a href="#product" class="flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-line bg-white/80 px-7 text-base font-semibold text-ink shadow-sm backdrop-blur transition-all duration-200 hover:bg-white hover:shadow-md sm:w-auto">
+            <svg class="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5.5v13a1 1 0 0 0 1.54.84l10.2-6.5a1 1 0 0 0 0-1.68L9.54 4.66A1 1 0 0 0 8 5.5z" />
+            </svg>
+            Watch 2-min demo
+          </a>
+        </div>
+        <p class="reveal mt-4 text-center text-sm text-muted">Free 14-day trial · No credit card required · Cancel anytime</p>
+
+        <!-- social proof: stats strip -->
+        <dl class="reveal mx-auto mt-14 grid max-w-4xl grid-cols-2 gap-6 text-center sm:grid-cols-4">
+          <div>
+            <dt class="text-sm text-muted">Active teams</dt>
+            <dd class="mt-1 text-3xl font-bold text-ink">4,000+</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-muted">Events processed</dt>
+            <dd class="mt-1 text-3xl font-bold text-ink">1.2B/day</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-muted">Uptime SLA</dt>
+            <dd class="mt-1 text-3xl font-bold text-ink">99.99%</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-muted">Avg. rating</dt>
+            <dd class="mt-1 text-3xl font-bold text-ink">4.9/5</dd>
+          </div>
+        </dl>
+
+        <!-- product mockup -->
+        <div class="reveal relative mx-auto mt-16 max-w-5xl">
+          <div class="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br from-primary/20 via-transparent to-accent/20 blur-2xl" aria-hidden="true"></div>
+          <div class="overflow-hidden rounded-2xl border border-line bg-white shadow-2xl shadow-ink/10">
+            <!-- window chrome -->
+            <div class="flex items-center gap-2 border-b border-line bg-surface px-4 py-3">
+              <span class="h-3 w-3 rounded-full bg-destructive/80" aria-hidden="true"></span>
+              <span class="h-3 w-3 rounded-full bg-amber-400" aria-hidden="true"></span>
+              <span class="h-3 w-3 rounded-full bg-emerald-400" aria-hidden="true"></span>
+              <span class="ml-3 hidden rounded-md bg-white px-3 py-1 text-xs text-muted sm:block">app.metrico.app/overview</span>
+            </div>
+            <div class="flex">
+              <!-- mini sidebar -->
+              <div class="hidden w-44 shrink-0 border-r border-line bg-surface p-3 sm:block" aria-hidden="true">
+                <div class="mb-4 rounded-md bg-primary px-3 py-2 text-xs font-semibold text-white">Overview</div>
+                <div class="space-y-2 px-3 text-xs text-muted">
+                  <p>Funnels</p>
+                  <p>Retention</p>
+                  <p>Revenue</p>
+                  <p>Sessions</p>
+                  <p>Dashboards</p>
+                </div>
+              </div>
+              <!-- dashboard body -->
+              <div class="flex-1 p-4 sm:p-6">
+                <!-- stat cards -->
+                <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  <div class="rounded-lg border border-line p-3">
+                    <p class="text-xs text-muted">Active users</p>
+                    <p class="mt-1 text-xl font-bold text-ink">12,847</p>
+                    <p class="mt-0.5 text-xs font-semibold text-emerald-600">+12.4%</p>
+                  </div>
+                  <div class="rounded-lg border border-line p-3">
+                    <p class="text-xs text-muted">Signups</p>
+                    <p class="mt-1 text-xl font-bold text-ink">1,092</p>
+                    <p class="mt-0.5 text-xs font-semibold text-emerald-600">+8.1%</p>
+                  </div>
+                  <div class="rounded-lg border border-line p-3">
+                    <p class="text-xs text-muted">Conversion</p>
+                    <p class="mt-1 text-xl font-bold text-ink">6.8%</p>
+                    <p class="mt-0.5 text-xs font-semibold text-emerald-600">+1.2pt</p>
+                  </div>
+                  <div class="rounded-lg border border-line p-3">
+                    <p class="text-xs text-muted">Revenue</p>
+                    <p class="mt-1 text-xl font-bold text-ink">$84.2K</p>
+                    <p class="mt-0.5 text-xs font-semibold text-emerald-600">+21.7%</p>
+                  </div>
+                </div>
+                <!-- charts -->
+                <div class="mt-4 grid gap-3 lg:grid-cols-5">
+                  <!-- line chart -->
+                  <div class="rounded-lg border border-line p-4 lg:col-span-3">
+                    <p class="text-xs font-semibold text-ink">Weekly active users</p>
+                    <svg class="mt-3 h-32 w-full" viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#2563EB" stop-opacity="0.25" />
+                          <stop offset="100%" stop-color="#2563EB" stop-opacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M0,95 C30,88 50,72 80,78 C110,84 130,52 160,56 C190,60 210,30 240,34 C265,37 280,18 300,14 L300,120 L0,120 Z" fill="url(#areaFill)" />
+                      <path d="M0,95 C30,88 50,72 80,78 C110,84 130,52 160,56 C190,60 210,30 240,34 C265,37 280,18 300,14" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" />
+                      <circle cx="240" cy="34" r="4" fill="#2563EB" stroke="#fff" stroke-width="2" />
+                    </svg>
+                  </div>
+                  <!-- bar chart -->
+                  <div class="rounded-lg border border-line p-4 lg:col-span-2">
+                    <p class="text-xs font-semibold text-ink">Sessions by source</p>
+                    <div class="mt-4 flex h-28 items-end justify-between gap-2" aria-hidden="true">
+                      <div class="w-full rounded-t bg-primary-light" style="height:38%"></div>
+                      <div class="w-full rounded-t bg-brand-500/70" style="height:55%"></div>
+                      <div class="w-full rounded-t bg-primary" style="height:72%"></div>
+                      <div class="w-full rounded-t bg-brand-500/80" style="height:60%"></div>
+                      <div class="w-full rounded-t bg-accent/80" style="height:88%"></div>
+                      <div class="w-full rounded-t bg-primary/80" style="height:66%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LOGOS ============ -->
+    <section class="border-y border-line bg-white py-12" aria-label="Trusted by">
+      <p class="text-center text-sm font-medium text-muted">Trusted by product teams at</p>
+      <div class="mx-auto mt-6 flex max-w-5xl flex-wrap items-center justify-center gap-x-12 gap-y-4 px-4 text-lg font-bold tracking-tight text-ink/40">
+        <span>Acme</span><span>Nova</span><span>Vertex</span><span>Orbit</span><span>Lumen</span><span>Pulse</span>
+      </div>
+    </section>
+
+    <!-- ============ FEATURES ============ -->
+    <section id="features" class="py-20 sm:py-28">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="reveal mx-auto max-w-2xl text-center">
+          <h2 class="text-3xl font-bold tracking-tight text-ink sm:text-4xl">Everything you need to grow</h2>
+          <p class="mt-4 text-lg text-muted">One platform for product analytics, experimentation, and reporting — built for speed and clarity.</p>
+        </div>
+
+        <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <!-- feature cards -->
+          <article class="reveal group rounded-2xl border border-line bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-light text-primary transition-transform duration-200 group-hover:scale-105">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 12l3-8 3 16 3-11 3 7 3-10 3 6" />
+              </svg>
+            </div>
+            <h3 class="mt-5 text-lg font-semibold text-ink">Real-time dashboards</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">Live charts that update the moment events arrive. Segment by anything and drill into any metric in two clicks.</p>
+          </article>
+
+          <article class="reveal group rounded-2xl border border-line bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-light text-primary transition-transform duration-200 group-hover:scale-105">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 16l5-6 4 4 6-8M20 6h1M21 5v2" />
+              </svg>
+            </div>
+            <h3 class="mt-5 text-lg font-semibold text-ink">Funnel analysis</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">Find the exact step where users drop off. Get AI-suggested fixes based on patterns across similar products.</p>
+          </article>
+
+          <article class="reveal group rounded-2xl border border-line bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-light text-primary transition-transform duration-200 group-hover:scale-105">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 4v16h16M8 15v-3m4 3V9m4 6V6" />
+              </svg>
+            </div>
+            <h3 class="mt-5 text-lg font-semibold text-ink">Retention & cohorts</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">See how engagement evolves over time. Cohort heatmaps surface the improvements that actually stick.</p>
+          </article>
+
+          <article class="reveal group rounded-2xl border border-line bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-light text-primary transition-transform duration-200 group-hover:scale-105">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3a5 5 0 0 1 5 5c0 1.6-.8 2.9-1.6 3.8-.4.5-.7 1-.7 1.7v.5h-5.4v-.5c0-.7-.3-1.2-.7-1.7C7.8 10.9 7 9.6 7 8a5 5 0 0 1 5-5z" />
+                <path d="M9.5 16.5h5" />
+                <path d="M10 20h4" />
+              </svg>
+            </div>
+            <h3 class="mt-5 text-lg font-semibold text-ink">Alerts & anomaly detection</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">Get notified before small problems become big ones. Anomaly alerts with clear, human-readable explanations.</p>
+          </article>
+
+          <article class="reveal group rounded-2xl border border-line bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-light text-primary transition-transform duration-200 group-hover:scale-105">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 7h16M4 12h10M4 17h6" />
+                <circle cx="17" cy="17" r="3" />
+              </svg>
+            </div>
+            <h3 class="mt-5 text-lg font-semibold text-ink">No-code reports</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">Drag, drop, and share beautiful reports with stakeholders. Scheduled PDFs land in Slack or email automatically.</p>
+          </article>
+
+          <article class="reveal group rounded-2xl border border-line bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-light text-primary transition-transform duration-200 group-hover:scale-105">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 12l2 2 4-4" />
+                <path d="M12 3l7.5 3v5c0 4.5-3.2 8.2-7.5 9.5C7.7 19.2 4.5 15.5 4.5 11V6L12 3z" />
+              </svg>
+            </div>
+            <h3 class="mt-5 text-lg font-semibold text-ink">Enterprise-grade security</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">SOC 2 Type II, GDPR-ready data residency, granular roles, and SSO for every plan — your data stays yours.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRODUCT / VALUE PROP ============ -->
+    <section id="product" class="bg-white py-20 sm:py-28">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid items-center gap-12 lg:grid-cols-2">
+          <div class="reveal">
+            <span class="text-sm font-semibold uppercase tracking-wide text-primary">Why Metrico</span>
+            <h2 class="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">From raw events to answers in minutes</h2>
+            <p class="mt-4 text-lg leading-relaxed text-muted">
+              Most analytics tools make you wait days for custom queries. Metrico gives your whole team access to
+              product insight — from PMs and designers to support and leadership.
+            </p>
+            <ul class="mt-8 space-y-4">
+              <li class="flex items-start gap-3">
+                <svg class="mt-0.5 h-6 w-6 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M8.5 12.5l2.5 2.5 4.5-5.5" />
+                </svg>
+                <p class="text-muted">Set up with one snippet — no data team required, value in under 15 minutes.</p>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="mt-0.5 h-6 w-6 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M8.5 12.5l2.5 2.5 4.5-5.5" />
+                </svg>
+                <p class="text-muted">Plain-English query builder — filters, segments, and formulas without SQL.</p>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="mt-0.5 h-6 w-6 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M8.5 12.5l2.5 2.5 4.5-5.5" />
+                </svg>
+                <p class="text-muted">Sub-second queries on billions of events — dashboards never feel slow.</p>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="mt-0.5 h-6 w-6 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M8.5 12.5l2.5 2.5 4.5-5.5" />
+                </svg>
+                <p class="text-muted">40+ integrations — Segment, Snowflake, BigQuery, Stripe, and your data warehouse.</p>
+              </li>
+            </ul>
+          </div>
+
+          <!-- integration / code mock -->
+          <div class="reveal">
+            <div class="overflow-hidden rounded-2xl border border-line bg-surface shadow-xl">
+              <div class="flex items-center gap-2 border-b border-line bg-white px-4 py-3">
+                <span class="h-3 w-3 rounded-full bg-destructive/80" aria-hidden="true"></span>
+                <span class="h-3 w-3 rounded-full bg-amber-400" aria-hidden="true"></span>
+                <span class="h-3 w-3 rounded-full bg-emerald-400" aria-hidden="true"></span>
+                <span class="ml-3 text-xs font-medium text-muted">Quick start — your app</span>
+              </div>
+              <pre class="overflow-x-auto p-5 text-sm leading-relaxed text-ink"><code><span class="text-muted">// 1. Install</span>
+npm i @metrico/sdk
+
+<span class="text-muted">// 2. Track any event</span>
+metrico.track(<span class="text-accent">"signup_completed"</span>, {
+  plan: <span class="text-accent">"pro"</span>,
+  source: <span class="text-accent">"organic"</span>
+})
+
+<span class="text-muted">// 3. Ask Metrico</span>
+<span class="text-primary">query</span>(<span class="text-accent">"signup funnels by source"</span>)</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TESTIMONIALS ============ -->
+    <section class="py-20 sm:py-28">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="reveal mx-auto max-w-2xl text-center">
+          <h2 class="text-3xl font-bold tracking-tight text-ink sm:text-4xl">Loved by product teams</h2>
+          <p class="mt-4 text-lg text-muted">4.9/5 average across 1,200+ verified reviews.</p>
+        </div>
+
+        <div class="mt-14 grid gap-6 md:grid-cols-3">
+          <figure class="reveal flex flex-col rounded-2xl border border-line bg-card p-6 shadow-sm">
+            <div class="flex gap-1 text-amber-400" aria-label="Rated 5 out of 5">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+            </div>
+            <blockquote class="mt-4 flex-1 text-[15px] leading-relaxed text-ink">
+              "We replaced three tools with Metrico and cut our time-to-insight from days to hours. The funnel
+              analysis alone paid for itself in the first month."
+            </blockquote>
+            <figcaption class="mt-6 flex items-center gap-3">
+              <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary-light text-sm font-bold text-primary" aria-hidden="true">SG</span>
+              <div>
+                <p class="text-sm font-semibold text-ink">Sarah Goldberg</p>
+                <p class="text-xs text-muted">Head of Product, Vertex</p>
+              </div>
+            </figcaption>
+          </figure>
+
+          <figure class="reveal flex flex-col rounded-2xl border border-line bg-card p-6 shadow-sm">
+            <div class="flex gap-1 text-amber-400" aria-label="Rated 5 out of 5">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+            </div>
+            <blockquote class="mt-4 flex-1 text-[15px] leading-relaxed text-ink">
+              "The plain-English query builder is magic. Our PMs finally explore data themselves without waiting
+              on a data analyst. Highly recommend for lean teams."
+            </blockquote>
+            <figcaption class="mt-6 flex items-center gap-3">
+              <span class="flex h-11 w-11 items-center justify-center rounded-full bg-accent/15 text-sm font-bold text-accent" aria-hidden="true">DC</span>
+              <div>
+                <p class="text-sm font-semibold text-ink">Diego Carrera</p>
+                <p class="text-xs text-muted">Senior PM, Lumen</p>
+              </div>
+            </figcaption>
+          </figure>
+
+          <figure class="reveal flex flex-col rounded-2xl border border-line bg-card p-6 shadow-sm">
+            <div class="flex gap-1 text-amber-400" aria-label="Rated 5 out of 5">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.4 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+            </div>
+            <blockquote class="mt-4 flex-1 text-[15px] leading-relaxed text-ink">
+              "Setup took minutes, not weeks. For the first time our leadership dashboard is built by the people
+              who actually use it."
+            </blockquote>
+            <figcaption class="mt-6 flex items-center gap-3">
+              <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary-light text-sm font-bold text-primary" aria-hidden="true">AN</span>
+              <div>
+                <p class="text-sm font-semibold text-ink">Amara Nwosu</p>
+                <p class="text-xs text-muted">Founder, Orbit</p>
+              </div>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRICING ============ -->
+    <section id="pricing" class="border-y border-line bg-white py-20 sm:py-28">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="reveal mx-auto max-w-2xl text-center">
+          <h2 class="text-3xl font-bold tracking-tight text-ink sm:text-4xl">Simple, transparent pricing</h2>
+          <p class="mt-4 text-lg text-muted">Start free. Upgrade when your team grows. No surprises.</p>
+          <div class="mt-6 inline-flex items-center rounded-lg border border-line bg-surface p-1" role="group" aria-label="Billing period">
+            <button id="billingMonthly" type="button" aria-pressed="true"
+              class="flex min-h-11 cursor-pointer items-center rounded-md bg-white px-4 text-sm font-semibold text-ink shadow-sm transition-colors">Monthly</button>
+            <button id="billingAnnual" type="button" aria-pressed="false"
+              class="flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-4 text-sm font-semibold text-muted transition-colors hover:text-ink">
+              Annual
+              <span class="rounded-full bg-primary-light px-2 py-0.5 text-xs font-bold text-primary">Save 20%</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-14 grid gap-6 lg:grid-cols-3">
+          <!-- Free -->
+          <div class="reveal flex flex-col rounded-2xl border border-line bg-card p-8">
+            <h3 class="text-lg font-semibold text-ink">Free</h3>
+            <p class="mt-1 text-sm text-muted">For side projects and early validation.</p>
+            <p class="mt-6 flex items-baseline gap-1">
+              <span class="text-4xl font-bold text-ink">$0</span>
+              <span class="text-sm text-muted">/month</span>
+            </p>
+            <a href="#cta" class="mt-8 flex min-h-11 cursor-pointer items-center justify-center rounded-lg border border-line text-sm font-semibold text-ink transition-colors hover:bg-surface">Start free</a>
+            <ul class="mt-8 space-y-3 text-sm text-muted">
+              <li class="flex items-start gap-2.5">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+                1 project · 3 seats
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+                3-month data retention
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+                Core dashboards & funnels
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+                Community support
+              </li>
+            </ul>
+          </div>
+
+          <!-- Pro (highlighted) -->
+          <div class="reveal relative flex flex-col rounded-2xl border-2 border-primary bg-card p-8 shadow-xl shadow-primary/10 lg:scale-[1.03]">
+            <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-xs font-bold uppercase tracking-wide text-white">Most popular</span>
+            <h3 class="text-lg font-semibold text-ink">Pro</h3>
+            <p class="mt-1 text-sm text-muted">For growing product teams shipping weekly.</p>
+            <p class="mt-6 flex items-baseline gap-1">
+              <span class="text-4xl font-bold text-ink" id="proPrice">$29</span>
+              <span class="text-sm text-muted">/month</span>
+            </p>
+            <p class="mt-1 text-xs text-muted" id="proNote">or $348 billed annually</p>
+            <a href="#cta" class="mt-8 flex min-h-11 cursor-pointer items-center justify-center rounded-lg bg-primary text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-primary-dark active:scale-[0.98]">Start 14-day trial</a>
+            <ul class="mt-8 space-y-3 text-sm text-muted">
+              <li class="flex items-start gap-2.5">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+                Unlimited projects · 10 seats
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+                12-month data retention
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+                AI insights & anomaly alerts
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+                40+ integrations & API
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+                Priority email support
+              </li>
+            </ul>
+          </div>
+
+          <!-- Enterprise -->
+          <div class="reveal flex flex-col rounded-2xl border border-line bg-ink p-8 text-white">
+            <h3 class="text-lg font-semibold">Enterprise</h3>
+            <p class="mt-1 text-sm text-white/70">For companies with advanced needs.</p>
+            <p class="mt-6 flex items-baseline gap-1">
+              <span class="text-4xl font-bold">Custom</span>
+              <span class="text-sm text-white/70">/year</span>
+            </p>
+            <a href="#cta" class="mt-8 flex min-h-11 cursor-pointer items-center justify-center rounded-lg bg-accent text-sm font-semibold text-black shadow-md transition-all duration-200 hover:bg-accent-dark active:scale-[0.98]">Talk to sales</a>
+            <ul class="mt-8 space-y-3 text-sm text-white/80">
+              <li class="flex items-start gap-2.5">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+                Unlimited everything
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+                SSO / SAML & audit logs
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+                Data residency & BYOC
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+                Dedicated success manager
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="reveal mt-8 text-center text-sm text-muted">
+          All plans include unlimited dashboards, SSL encryption, and a 30-day money-back guarantee.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section id="faq" class="py-20 sm:py-28">
+      <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <div class="reveal text-center">
+          <h2 class="text-3xl font-bold tracking-tight text-ink sm:text-4xl">Frequently asked questions</h2>
+        </div>
+        <div class="reveal mt-10 space-y-3">
+          <details class="group rounded-xl border border-line bg-card p-5 open:shadow-md">
+            <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-semibold text-ink [&::-webkit-details-marker]:hidden">
+              How long does setup take?
+              <svg class="h-5 w-5 shrink-0 text-muted transition-transform duration-200 group-open:rotate-45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-muted">Most teams are live in under 15 minutes. Add one snippet to your app or site, and Metrico starts tracking events automatically.</p>
+          </details>
+
+          <details class="group rounded-xl border border-line bg-card p-5 open:shadow-md">
+            <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-semibold text-ink [&::-webkit-details-marker]:hidden">
+              Do I need a data team to use Metrico?
+              <svg class="h-5 w-5 shrink-0 text-muted transition-transform duration-200 group-open:rotate-45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-muted">No. The query builder uses plain English — filters, segments, and formulas are visual. Your PMs, designers, and support team can self-serve.</p>
+          </details>
+
+          <details class="group rounded-xl border border-line bg-card p-5 open:shadow-md">
+            <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-semibold text-ink [&::-webkit-details-marker]:hidden">
+              How is my data secured?
+              <svg class="h-5 w-5 shrink-0 text-muted transition-transform duration-200 group-open:rotate-45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-muted">Metrico is SOC 2 Type II certified and GDPR-ready. Data is encrypted in transit and at rest, and Enterprise plans support data residency and bring-your-own-cloud.</p>
+          </details>
+
+          <details class="group rounded-xl border border-line bg-card p-5 open:shadow-md">
+            <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-semibold text-ink [&::-webkit-details-marker]:hidden">
+              Can I cancel anytime?
+              <svg class="h-5 w-5 shrink-0 text-muted transition-transform duration-200 group-open:rotate-45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-muted">Absolutely. Cancel in two clicks from settings. Annual plans include a 30-day money-back guarantee — no questions asked.</p>
+          </details>
+
+          <details class="group rounded-xl border border-line bg-card p-5 open:shadow-md">
+            <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-semibold text-ink [&::-webkit-details-marker]:hidden">
+              What integrations are available?
+              <svg class="h-5 w-5 shrink-0 text-muted transition-transform duration-200 group-open:rotate-45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-muted">40+ native integrations including Segment, Snowflake, BigQuery, dbt, Stripe, Slack, and Zapier, plus a full REST API and webhooks.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section id="cta" class="pb-24">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="reveal relative overflow-hidden rounded-3xl bg-ink px-6 py-16 text-center sm:px-16 sm:py-20">
+          <!-- decorative gradient -->
+          <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+            <div class="absolute -left-16 -top-16 h-64 w-64 rounded-full bg-primary/30 blur-3xl"></div>
+            <div class="absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-accent/25 blur-3xl"></div>
+          </div>
+          <div class="relative">
+            <h2 class="mx-auto max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Start understanding your users today
+            </h2>
+            <p class="mx-auto mt-4 max-w-xl text-lg text-white/70">
+              Join 4,000+ product teams. Free for 14 days — no credit card, no setup call, no risk.
+            </p>
+            <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <a href="#" class="flex min-h-11 w-full cursor-pointer items-center justify-center rounded-lg bg-accent px-8 text-base font-semibold text-black shadow-lg shadow-accent/30 transition-all duration-200 hover:bg-accent-dark active:scale-[0.98] sm:w-auto">
+                Start free trial
+              </a>
+              <a href="#pricing" class="flex min-h-11 w-full cursor-pointer items-center justify-center rounded-lg border border-white/25 px-8 text-base font-semibold text-white transition-colors hover:bg-white/10 sm:w-auto">
+                Compare plans
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="border-t border-line bg-white">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
+        <div class="lg:col-span-2">
+          <a href="#" class="flex items-center gap-2 text-lg font-bold text-ink">
+            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="5" fill="#2563EB" />
+              <path d="M7.5 16v-2m3 2v-4m3 4V9m3 7V6" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            Metrico
+          </a>
+          <p class="mt-4 max-w-sm text-sm leading-relaxed text-muted">
+            Product analytics for modern teams. Built for speed, clarity, and trust.
+          </p>
+        </div>
+
+        <nav aria-label="Product">
+          <h3 class="text-sm font-semibold text-ink">Product</h3>
+          <ul class="mt-4 space-y-3 text-sm text-muted">
+            <li><a href="#features" class="transition-colors hover:text-ink">Features</a></li>
+            <li><a href="#product" class="transition-colors hover:text-ink">Product tour</a></li>
+            <li><a href="#pricing" class="transition-colors hover:text-ink">Pricing</a></li>
+            <li><a href="#" class="transition-colors hover:text-ink">Integrations</a></li>
+            <li><a href="#" class="transition-colors hover:text-ink">Changelog</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-label="Company">
+          <h3 class="text-sm font-semibold text-ink">Company</h3>
+          <ul class="mt-4 space-y-3 text-sm text-muted">
+            <li><a href="#" class="transition-colors hover:text-ink">About</a></li>
+            <li><a href="#" class="transition-colors hover:text-ink">Blog</a></li>
+            <li><a href="#" class="transition-colors hover:text-ink">Careers</a></li>
+            <li><a href="#" class="transition-colors hover:text-ink">Contact</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-label="Legal">
+          <h3 class="text-sm font-semibold text-ink">Legal</h3>
+          <ul class="mt-4 space-y-3 text-sm text-muted">
+            <li><a href="#" class="transition-colors hover:text-ink">Privacy</a></li>
+            <li><a href="#" class="transition-colors hover:text-ink">Terms</a></li>
+            <li><a href="#" class="transition-colors hover:text-ink">Security</a></li>
+            <li><a href="#" class="transition-colors hover:text-ink">SOC 2 report</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-line pt-8 sm:flex-row">
+        <p class="text-sm text-muted">© 2026 Metrico, Inc. All rights reserved.</p>
+        <div class="flex items-center gap-4">
+          <a href="#" aria-label="Metrico on X" class="flex h-11 w-11 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface hover:text-ink">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.2l7.3-8.3L2.7 2h6.4l4.4 5.9L18.9 2zm-1.1 18h1.7L7.1 3.9H5.3L17.8 20z"/></svg>
+          </a>
+          <a href="#" aria-label="Metrico on GitHub" class="flex h-11 w-11 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface hover:text-ink">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.58 9.58 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85V21c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
+          </a>
+          <a href="#" aria-label="Metrico on LinkedIn" class="flex h-11 w-11 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface hover:text-ink">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5A2.49 2.49 0 1 1 5 8.48a2.49 2.49 0 0 1-.02-4.98zM3 9.5h4v11H3v-11zM9.5 9.5h3.8v1.6h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V20.5h-4v-4.55c0-1.08-.02-2.48-1.51-2.48-1.51 0-1.74 1.18-1.74 2.4V20.5h-4v-11z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu
+    var menuBtn = document.getElementById('menuBtn');
+    var mobileMenu = document.getElementById('mobileMenu');
+    var iconOpen = document.getElementById('iconOpen');
+    var iconClose = document.getElementById('iconClose');
+
+    menuBtn.addEventListener('click', function () {
+      var open = mobileMenu.classList.toggle('hidden') === false;
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      iconOpen.classList.toggle('hidden', open);
+      iconClose.classList.toggle('hidden', !open);
+    });
+
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        mobileMenu.classList.add('hidden');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        iconOpen.classList.remove('hidden');
+        iconClose.classList.add('hidden');
+      });
+    });
+
+    // Nav shadow on scroll
+    var nav = document.getElementById('nav');
+    window.addEventListener('scroll', function () {
+      nav.classList.toggle('shadow-sm', window.scrollY > 8);
+    }, { passive: true });
+
+    // Billing toggle
+    var monthlyBtn = document.getElementById('billingMonthly');
+    var annualBtn = document.getElementById('billingAnnual');
+    var proPrice = document.getElementById('proPrice');
+    var proNote = document.getElementById('proNote');
+
+    function setBilling(annual) {
+      monthlyBtn.setAttribute('aria-pressed', annual ? 'false' : 'true');
+      annualBtn.setAttribute('aria-pressed', annual ? 'true' : 'false');
+      monthlyBtn.classList.toggle('bg-white', !annual);
+      monthlyBtn.classList.toggle('shadow-sm', !annual);
+      monthlyBtn.classList.toggle('text-ink', !annual);
+      monthlyBtn.classList.toggle('text-muted', annual);
+      annualBtn.classList.toggle('bg-white', annual);
+      annualBtn.classList.toggle('shadow-sm', annual);
+      annualBtn.classList.toggle('text-ink', annual);
+      annualBtn.classList.toggle('text-muted', !annual);
+      if (annual) {
+        proPrice.textContent = '$23';
+        proNote.textContent = 'billed annually · save $72/yr';
+      } else {
+        proPrice.textContent = '$29';
+        proNote.textContent = 'or $348 billed annually';
+      }
+    }
+    monthlyBtn.addEventListener('click', function () { setBilling(false); });
+    annualBtn.addEventListener('click', function () { setBilling(true); });
+
+    // Reveal on scroll (respects reduced motion)
+    var motionOk = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (motionOk && 'IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.reveal').forEach(function (el) { observer.observe(el); });
+    } else {
+      document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-visible'); });
+    }
+  </script>
+</body>
+</html>
