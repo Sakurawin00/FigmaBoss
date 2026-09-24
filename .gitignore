@@ -6,5 +6,6 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Вложенный git-репозиторий (клон figsor со своим remote) — не трекаем
+# Вложенные git-репозитории со своими remote — не трекаем
 figsor/
+mini-figma/
